@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="140" viewBox="0 0 640 140" role="img" aria-label="Tianle Yuan logo">
+  <!-- Text-only wordmark. Load Poppins on your site for exact appearance. -->
+  <g transform="translate(24,92)">
+    <text x="0" y="0"
+          font-family="Poppins, Inter, Segoe UI, Helvetica Neue, Arial, sans-serif"
+          font-size="56"
+          font-weight="700"
+          fill="#ffc700">Tianle Yuan</text>
+  </g>
+</svg>
