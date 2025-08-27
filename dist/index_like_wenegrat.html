@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Tianle Yuan - Research Page</title>
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --brand-yellow:#ffc700;
+        --ink:#0f172a;
+        --muted:#475569;
+        --line:#e2e8f0;
+        --bg:#ffffff;
+        --bg-alt:#f8fafc;
+        --link:#0b5fff;
+        --maxw: 980px;
+      }
+      *{box-sizing:border-box}
+      html,body{margin:0;padding:0}
+      body{
+        color:var(--ink);
+        background:var(--bg);
+        font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      }
+      a{color:var(--link);text-decoration:none}
+      a:hover{text-decoration:underline}
+      .container{max-width:var(--maxw);margin:0 auto;padding:0 20px}
+      /* Header / Nav */
+      header.site-header{
+        position:sticky;top:0;z-index:50;
+        background:rgba(255,255,255,.9);
+        border-bottom:1px solid var(--line);
+        backdrop-filter:saturate(120%) blur(8px);
+      }
+      .nav{display:flex;align-items:center;justify-content:space-between;min-height:64px}
+      .brand{display:inline-flex;align-items:center;gap:12px}
+      .brand svg{display:block;width:220px;height:auto}
+      nav ul{list-style:none;margin:0;padding:0;display:flex;gap:18px;flex-wrap:wrap}
+      nav a{color:var(--ink);font-weight:600}
+      nav a:hover{color:var(--link)}
+      /* Hero */
+      .hero{background:var(--bg-alt);padding:64px 0}
+      .hero h1{
+        margin:0 0 8px 0;
+        font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+        font-size:clamp(28px,5vw,44px);
+        line-height:1.15;
+      }
+      .hero p{margin:0;color:var(--muted)}
+      /* Sections */
+      section{padding:48px 0}
+      h2{
+        font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+        font-size:clamp(22px,3.2vw,30px);
+        margin:0 0 16px 0;
+      }
+      /* Research topics as accordions */
+      details.topic{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fff}
+      details.topic + details.topic{margin-top:12px}
+      details.topic summary{cursor:pointer;font-weight:700}
+      details.topic p{margin:10px 0 0 0;color:var(--ink)}
+      /* Lists */
+      .publist,.teachlist{padding-left:18px}
+      .publist li + li,.teachlist li + li{margin-top:10px}
+      .muted{color:var(--muted)}
+      /* People grid (optional) */
+      .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+      .card{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fff}
+      .card h4{margin:0 0 4px 0}
+      .card .role{font-size:14px;color:var(--muted);margin:0 0 8px 0}
+      footer{border-top:1px solid var(--line);padding:28px 0;font-size:14px;color:var(--muted)}
+      @media (max-width:540px){.brand svg{width:180px}}
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container nav">
+        <a class="brand" href="#top" aria-label="Tianle Yuan - Home">
+          <!-- Inline SVG wordmark: yellow text -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 140" role="img" aria-label="Tianle Yuan logo">
+            <g transform="translate(0,92)">
+              <text x="0" y="0"
+                    font-family="Poppins, Inter, Segoe UI, Helvetica Neue, Arial, sans-serif"
+                    font-size="56"
+                    font-weight="700"
+                    fill="#ffc700">Tianle Yuan</text>
+            </g>
+          </svg>
+        </a>
+        <nav aria-label="Primary">
+          <ul>
+            <li><a href="#research">Research</a></li>
+            <li><a href="#teaching">Teaching</a></li>
+            <li><a href="#publications">Publications</a></li>
+            <li><a href="#people">People</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="container">
+          <h1>Atmospheric & Oceanic Research</h1>
+          <p class="muted">Remote sensing · aerosols & clouds · climate dynamics</p>
+        </div>
+      </section>
+
+      <section id="research">
+        <div class="container">
+          <h2>Research</h2>
+          <p>We study geophysical fluid dynamics and the Earth system using theory, observations, and numerical models.</p>
+
+          <details class="topic">
+            <summary>Cloud–Aerosol Interactions</summary>
+            <p>Investigation of how aerosols modify cloud microphysics and radiative forcing using satellite retrievals and reanalysis.</p>
+          </details>
+
+          <details class="topic">
+            <summary>Submesoscale Dynamics</summary>
+            <p>Dynamics at 0.1–10 km scales and their role in vertical exchange, productivity, and air–sea interaction.</p>
+          </details>
+
+          <details class="topic">
+            <summary>Remote Sensing Methods</summary>
+            <p>New approaches for multi-sensor fusion and uncertainty quantification for climate data records.</p>
+          </details>
+        </div>
+      </section>
+
+      <section id="teaching">
+        <div class="container">
+          <h2>Teaching</h2>
+          <ul class="teachlist">
+            <li><strong>Atmospheric Physics</strong> — Fall. Thermodynamics, radiation, and cloud microphysics.</li>
+            <li><strong>Remote Sensing of the Atmosphere</strong> — Spring. Satellite sensors, retrieval algorithms, and validation.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="publications">
+        <div class="container">
+          <h2>Publications</h2>
+          <p class="muted">Group members in <strong>bold</strong>.</p>
+          <ul class="publist">
+            <li><strong>Yuan, T.</strong> (2025). <em>Title of your paper</em>. Journal Name, 00(0), 1–10. <a href="#">PDF</a> · <a href="#">Code</a></li>
+            <li><strong>Yuan, T.</strong> (2024). <em>Another paper</em>. Conference Name. <a href="#">DOI</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="people">
+        <div class="container">
+          <h2>People</h2>
+          <div class="grid">
+            <article class="card">
+              <h4>Tianle Yuan</h4>
+              <p class="role">Research Professor</p>
+              <p>
+                <a href="mailto:tianle@umbc.edu">Email</a> ·
+                <a href="#" rel="me">Google Scholar</a> ·
+                <a href="https://github.com/tianle-yuan">GitHub</a>
+              </p>
+            </article>
+            <!-- Add students/postdocs as more cards here -->
+          </div>
+        </div>
+      </section>
+
+      <section id="contact">
+        <div class="container">
+          <h2>Contact</h2>
+          <p>Email: <a href="mailto:tianle@umbc.edu">tianle@umbc.edu</a></p>
+          <p>UMBC / NASA GESTAR II (update with your preferred affiliation and address).</p>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        © Tianle Yuan 2025
+      </div>
+    </footer>
+  </body>
+</html>
