@@ -366,5 +366,19 @@
         else header.classList.add('scrolled');
       }, { threshold: 0.1 }).observe(hero);
     </script>
+
+      //stop video playing after scrolling over the content
+      <script> 
+      const v = document.querySelector('.hero-video');
+      if (v) {
+        const io = new IntersectionObserver(([e]) => {
+          if (!e) return;
+          if (e.isIntersecting) v.play().catch(()=>{});
+          else v.pause();
+        }, { threshold: 0.01 });
+        io.observe(v);
+      }
+     </script>
+
   </body>
 </html>
