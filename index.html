@@ -557,6 +557,33 @@
         io.observe(v);
       }
      </script>
+  
+  <script>
+      // Open dialog when a card/link with data-dialog is clicked
+      document.querySelectorAll('[data-dialog]').forEach(el => {
+        el.addEventListener('click', e => {
+          e.preventDefault();
+          const id = el.getAttribute('data-dialog');
+          const dlg = document.getElementById(id);
+          if (dlg) { dlg.showModal(); dlg.querySelector('[data-close]')?.focus(); }
+        });
+      });
+    
+      // Close when clicking the backdrop
+      document.querySelectorAll('dialog.modal').forEach(dlg => {
+        dlg.addEventListener('click', e => {
+          const rect = dlg.getBoundingClientRect();
+          const inDialog = e.clientX >= rect.left && e.clientX <= rect.right &&
+                           e.clientY >= rect.top  && e.clientY <= rect.bottom;
+          if (!inDialog) dlg.close();
+        });
+      });
+    
+      // Close on button click
+      document.querySelectorAll('dialog [data-close]').forEach(btn => {
+        btn.addEventListener('click', () => btn.closest('dialog').close());
+      });
+    </script>
 
   </body>
 </html>
