@@ -37,25 +37,35 @@
         border-bottom:1px solid var(--line);
         backdrop-filter:saturate(120%) blur(8px);
       } */
-      header.site-header{
-      position:fixed; top:0; left:0; right:0; z-index:50;
-      background:transparent;          /* no white banner */
-      border-bottom:none;
-      transition:background-color .3s ease, border-color .3s ease, box-shadow .3s ease, backdrop-filter .3s ease;
-      }
+      /* Transparent over the hero */
+        header.site-header{
+          position:fixed; top:0; left:0; right:0; z-index:50;
+          background:transparent;
+          border-bottom:none;
+          transition:background-color .3s ease, border-color .3s ease, box-shadow .3s ease;
+        }
+        
+        /* Turn dark grey (almost black) after hero */
+        header.site-header.scrolled{
+          background: rgba(10,12,17,.92);         /* near-black */
+          border-bottom: 1px solid rgba(255,255,255,.08);
+          box-shadow: 0 2px 16px rgba(0,0,0,.30);
+        }
+        
+        /* Link colors on top of the hero image */
+        header.site-header:not(.scrolled) nav a{
+          color:#fff;
+          text-shadow:0 1px 8px rgba(0,0,0,.35);
+        }
+        
+        /* Link colors on dark header after scroll */
+        header.site-header.scrolled nav a{
+          color:#e5e7eb;                          /* light gray */
+        }
+        header.site-header.scrolled nav a:hover{
+          color:#ffffff;
+        }
 
-      /* When scrolled past the hero, add a background so links stay readable */
-      header.site-header.scrolled{
-      background:rgba(255,255,255,.9);
-      border-bottom:1px solid var(--line);
-      backdrop-filter:saturate(120%) blur(8px);
-      box-shadow:0 2px 16px rgba(0,0,0,.06);
-      }
-
-      /* Make nav links white while overlaying the hero image */
-      header.site-header:not(.scrolled) nav a{
-      color:#fff; text-shadow:0 1px 8px rgba(0,0,0,.35);
-      }
 
       .nav{display:flex;align-items:center;justify-content:space-between;min-height:64px}
       .brand{display:inline-flex;align-items:center;gap:12px}
