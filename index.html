@@ -284,7 +284,7 @@
         </div>
       </section>
 
-     <section id="publications" class="reveal">
+     <!-- <section id="publications" class="reveal">
         <div class="container">
           <h2>Publications</h2>
           <p class="muted">Group members in <strong>bold</strong>.</p>
@@ -294,6 +294,25 @@
           </ul>
         </div>
       </section>
+    -->
+
+     <section id="publications" class="reveal">
+      <div class="container">
+        <h2>Publications</h2>
+
+        <!-- Your publications will appear right here -->
+        <div id="pubs"></div>
+
+        <!-- Embed via BibBase (group by year, newest first, full names, minimal UI) -->
+        <script src="https://bibbase.org/show?bib=https://metatl.github.io/yuan/bib/publications.bib&jsonp=1&group0=year&sort=-year&fullnames=1&theme=dividers&hidemenu=1"></script>
+
+        <!-- Fallback link if the .bib isn't present yet -->
+        <p class="muted" style="margin-top:10px">
+          Full list on <a href="https://scholar.google.com/citations?user=Y8jCvxAAAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar</a>.
+        </p>
+          </div>
+        </section>
+
         
       <section id="teaching" class="reveal">
         <div class="container">
