@@ -125,17 +125,19 @@
         
     
     /* Target the h1 inside an element with the class "container" */
-        .container h1 {
+        .banner-title {
           color: ##FF9B00 !important; /* #D0021B;  A shade of red */
           font-family: 'Helvetica', Arial, sans-serif;
           font-size: 90px !important; /*clamp(300px,17vw,400px ); */
           text-align: center;
             }
       /* Place CSS here or in an external file */
+        p.muted { /* Target the paragraph */
+          text-align: center;
+        }
         .muted a {
           font-size: 2rem; /* Larger font size */
           color: #555;
-          text-align: center;
           text-decoration: none;
             }
         .muted a:hover {
@@ -238,7 +240,7 @@
           <source src="dist/assets/img/shiptrack_video.mp4" type="video/mp4">
           <!-- If neither source plays, the poster still shows -->
           </video>
-        <div class="container">
+        <div class="banner-title">
           <h1>Climate and Applied AI/ML </h1>
           <!-- <p class="muted"> 
               <a>  Data · Code · Analysis </a>
