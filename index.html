@@ -318,5 +318,13 @@
         btn.addEventListener('click', () => btn.closest('dialog').close());
       });
     </script>
+    <script>
+      const header = document.querySelector('header.site-header');
+      const hero = document.querySelector('.hero');
+      new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) header.classList.remove('scrolled');
+        else header.classList.add('scrolled');
+      }, { threshold: 0.1 }).observe(hero);
+    </script>
   </body>
 </html>
