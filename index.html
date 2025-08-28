@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Tianle Yuan - Research Page</title>
-    <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    <!-- Optional: Poppins for headings -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
     <style>
       :root {
@@ -16,9 +16,12 @@
         --bg-alt:#f8fafc;
         --link:#0b5fff;
         --maxw: 980px;
+        --radius: 14px;
+        --shadow: 0 6px 30px rgba(15,23,42,.08);
       }
       *{box-sizing:border-box}
       html,body{margin:0;padding:0}
+      html{scroll-behavior:smooth}
       body{
         color:var(--ink);
         background:var(--bg);
@@ -56,29 +59,54 @@
         font-size:clamp(22px,3.2vw,30px);
         margin:0 0 16px 0;
       }
-      /* Research topics as accordions */
-      details.topic{border:1px solid var(--line);border-radius:10px;padding:12px 14px;background:#fff}
-      details.topic + details.topic{margin-top:12px}
-      details.topic summary{cursor:pointer;font-weight:700}
-      details.topic p{margin:10px 0 0 0;color:var(--ink)}
-      /* Lists */
       .publist,.teachlist{padding-left:18px}
       .publist li + li,.teachlist li + li{margin-top:10px}
       .muted{color:var(--muted)}
-      /* People grid (optional) */
-      .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
-      .card{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fff}
-      .card h4{margin:0 0 4px 0}
-      .card .role{font-size:14px;color:var(--muted);margin:0 0 8px 0}
+      /* Image cards */
+      .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+      .card{
+        border:1px solid var(--line);
+        border-radius:var(--radius);
+        background:#fff;
+        box-shadow:var(--shadow);
+        overflow:hidden;
+        transition:transform .3s ease, box-shadow .3s ease;
+      }
+      .figure{position:relative;overflow:hidden}
+      .figure img{display:block;width:100%;height:auto;transform:scale(1.0);transition:transform .8s ease}
+      .card:hover .figure img{transform:scale(1.05)}
+      .card .pad{padding:14px}
+      /* People */
+      .role{font-size:14px;color:var(--muted);margin:.25rem 0 .5rem}
+      .actions a{margin-right:10px}
+      /* Reveal animations */
+      .reveal{opacity:0;transform:translateY(12px);transition:opacity .6s ease, transform .6s ease}
+      .reveal.in{opacity:1;transform:none}
+      /* Reduced motion */
+      @media (prefers-reduced-motion: reduce){
+        html{scroll-behavior:auto}
+        .card:hover .figure img{transform:none}
+        .reveal{opacity:1;transform:none}
+      }
       footer{border-top:1px solid var(--line);padding:28px 0;font-size:14px;color:var(--muted)}
       @media (max-width:540px){.brand svg{width:180px}}
+      /* Simple modal styles using <dialog> */
+      dialog.modal{
+        border:none;border-radius:var(--radius);padding:0;max-width:720px;width:92%;
+        box-shadow:var(--shadow);
+      }
+      dialog::backdrop{background:rgba(0,0,0,.2)}
+      .modal .pad{padding:18px}
+      .modal header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:14px 18px}
+      .modal header h3{margin:0;font-family:Poppins,system-ui}
+      .close-btn{background:none;border:1px solid var(--line);border-radius:10px;padding:6px 10px;cursor:pointer}
     </style>
   </head>
   <body>
     <header class="site-header">
       <div class="container nav">
         <a class="brand" href="#top" aria-label="Tianle Yuan - Home">
-          <!-- Inline SVG wordmark: yellow text -->
+          <!-- Inline yellow wordmark -->
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 140" role="img" aria-label="Tianle Yuan logo">
             <g transform="translate(0,92)">
               <text x="0" y="0"
@@ -102,36 +130,54 @@
     </header>
 
     <main id="top">
-      <section class="hero">
+      <section class="hero reveal">
         <div class="container">
           <h1>Atmospheric & Oceanic Research</h1>
           <p class="muted">Remote sensing · aerosols & clouds · climate dynamics</p>
         </div>
       </section>
 
-      <section id="research">
+      <!-- Research with images & hover -->
+      <section id="research" class="reveal">
         <div class="container">
           <h2>Research</h2>
           <p>We study geophysical fluid dynamics and the Earth system using theory, observations, and numerical models.</p>
 
-          <details class="topic">
-            <summary>Cloud–Aerosol Interactions</summary>
-            <p>Investigation of how aerosols modify cloud microphysics and radiative forcing using satellite retrievals and reanalysis.</p>
-          </details>
+          <div class="grid">
+            <article class="card">
+              <figure class="figure">
+                <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop" alt="Clouds over ocean">
+              </figure>
+              <div class="pad">
+                <h4>Cloud–Aerosol Interactions</h4>
+                <p class="muted">How aerosols modify cloud microphysics and radiative forcing using satellite retrievals.</p>
+              </div>
+            </article>
 
-          <details class="topic">
-            <summary>Submesoscale Dynamics</summary>
-            <p>Dynamics at 0.1–10 km scales and their role in vertical exchange, productivity, and air–sea interaction.</p>
-          </details>
+            <article class="card">
+              <figure class="figure">
+                <img src="https://images.unsplash.com/photo-1499346030926-9a72daac6c63?q=80&w=1200&auto=format&fit=crop" alt="Ocean waves">
+              </figure>
+              <div class="pad">
+                <h4>Submesoscale Dynamics</h4>
+                <p class="muted">0.1–10 km dynamics and their role in exchange, productivity, and air–sea interaction.</p>
+              </div>
+            </article>
 
-          <details class="topic">
-            <summary>Remote Sensing Methods</summary>
-            <p>New approaches for multi-sensor fusion and uncertainty quantification for climate data records.</p>
-          </details>
+            <article class="card">
+              <figure class="figure">
+                <img src="https://images.unsplash.com/photo-1476610182048-b716b8518aae?q=80&w=1200&auto=format&fit=crop" alt="Satellite over Earth">
+              </figure>
+              <div class="pad">
+                <h4>Remote Sensing Methods</h4>
+                <p class="muted">Multi-sensor fusion and uncertainty quantification for climate data records.</p>
+              </div>
+            </article>
+          </div>
         </div>
       </section>
 
-      <section id="teaching">
+      <section id="teaching" class="reveal">
         <div class="container">
           <h2>Teaching</h2>
           <ul class="teachlist">
@@ -141,7 +187,7 @@
         </div>
       </section>
 
-      <section id="publications">
+      <section id="publications" class="reveal">
         <div class="container">
           <h2>Publications</h2>
           <p class="muted">Group members in <strong>bold</strong>.</p>
@@ -152,25 +198,31 @@
         </div>
       </section>
 
-      <section id="people">
+      <!-- People with modal -->
+      <section id="people" class="reveal">
         <div class="container">
           <h2>People</h2>
           <div class="grid">
             <article class="card">
-              <h4>Tianle Yuan</h4>
-              <p class="role">Research Professor</p>
-              <p>
-                <a href="mailto:tianle@umbc.edu">Email</a> ·
-                <a href="#" rel="me">Google Scholar</a> ·
-                <a href="https://github.com/tianle-yuan">GitHub</a>
-              </p>
+              <figure class="figure">
+                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1200&auto=format&fit=crop" alt="Portrait placeholder">
+              </figure>
+              <div class="pad">
+                <h4>Tianle Yuan</h4>
+                <p class="role">Research Professor</p>
+                <p class="actions">
+                  <a href="mailto:tianle@umbc.edu">Email</a> ·
+                  <a href="#" rel="me">Google Scholar</a> ·
+                  <a href="https://github.com/tianle-yuan">GitHub</a> ·
+                  <a href="#" data-dialog="dlg-yuan">More</a>
+                </p>
+              </div>
             </article>
-            <!-- Add students/postdocs as more cards here -->
           </div>
         </div>
       </section>
 
-      <section id="contact">
+      <section id="contact" class="reveal">
         <div class="container">
           <h2>Contact</h2>
           <p>Email: <a href="mailto:tianle@umbc.edu">tianle@umbc.edu</a></p>
@@ -184,5 +236,42 @@
         © Tianle Yuan 2025
       </div>
     </footer>
+
+    <!-- Person modal -->
+    <dialog id="dlg-yuan" class="modal">
+      <header>
+        <h3>Tianle Yuan</h3>
+        <button class="close-btn" data-close>Close</button>
+      </header>
+      <div class="pad">
+        <p>Research interests: remote sensing of aerosols and clouds, aerosol–cloud interactions, satellite retrieval algorithms, and climate impacts.</p>
+      </div>
+    </dialog>
+
+    <script>
+      // Scroll-reveal with IntersectionObserver
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('in');
+            observer.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.15 });
+      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+      // Modal open/close handling
+      document.querySelectorAll('[data-dialog]').forEach(btn => {
+        btn.addEventListener('click', (ev) => {
+          ev.preventDefault();
+          const id = btn.getAttribute('data-dialog');
+          const dlg = document.getElementById(id);
+          if (dlg) dlg.showModal();
+        });
+      });
+      document.querySelectorAll('dialog [data-close]').forEach(btn => {
+        btn.addEventListener('click', () => btn.closest('dialog').close());
+      });
+    </script>
   </body>
 </html>
