@@ -31,12 +31,32 @@
       a:hover{text-decoration:underline}
       .container{max-width:var(--maxw);margin:0 auto;padding:0 20px}
       /* Header / Nav */
-      header.site-header{
+      /*header.site-header{
         position:sticky;top:0;z-index:50;
         background:rgba(255,255,255,.9);
         border-bottom:1px solid var(--line);
         backdrop-filter:saturate(120%) blur(8px);
+      } */
+      header.site-header{
+      position:fixed; top:0; left:0; right:0; z-index:50;
+      background:transparent;          /* no white banner */
+      border-bottom:none;
+      transition:background-color .3s ease, border-color .3s ease, box-shadow .3s ease, backdrop-filter .3s ease;
       }
+
+      /* When scrolled past the hero, add a background so links stay readable */
+      header.site-header.scrolled{
+      background:rgba(255,255,255,.9);
+      border-bottom:1px solid var(--line);
+      backdrop-filter:saturate(120%) blur(8px);
+      box-shadow:0 2px 16px rgba(0,0,0,.06);
+      }
+
+      /* Make nav links white while overlaying the hero image */
+      header.site-header:not(.scrolled) nav a{
+      color:#fff; text-shadow:0 1px 8px rgba(0,0,0,.35);
+      }
+
       .nav{display:flex;align-items:center;justify-content:space-between;min-height:64px}
       .brand{display:inline-flex;align-items:center;gap:12px}
       .brand svg{display:block;width:220px;height:auto}
