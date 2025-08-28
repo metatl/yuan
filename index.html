@@ -44,7 +44,19 @@
       nav a{color:var(--ink);font-weight:600}
       nav a:hover{color:var(--link)}
       /* Hero */
-      .hero{background:var(--bg-alt);padding:64px 0}
+      /*.hero{background:var(--bg-alt);padding:64px 0} */
+      .hero{
+      padding:96px 0;
+      color:#fff;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.35)),
+        url("dist/assets/img/header-bg.jpg")
+        center/cover no-repeat;
+      }
+      .hero h1,.hero p{color:#fff}
+      .hero .container{ text-shadow:0 2px 12px rgba(0,0,0,.4); }
+      @media (max-width:640px){ .hero{ padding:64px 0; } }
+
       .hero h1{
         margin:0 0 8px 0;
         font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
