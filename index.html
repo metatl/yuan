@@ -204,6 +204,7 @@
       .modal header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:14px 18px}
       .modal header h3{margin:0;font-family:Poppins,system-ui}
       .close-btn{background:none;border:1px solid var(--line);border-radius:10px;padding:6px 10px;cursor:pointer}
+      a.card-link{ display:block; color:inherit; text-decoration:none; }
     </style>
   </head>
   <body>
@@ -252,11 +253,12 @@
       </section>
 
       <!-- Research with images & hover -->
+      <!-- old section code here 
       <section id="research" class="reveal">
         <div class="container">
           <h2>Research</h2>
-          <p> We study climate and weather with observations, retrievals, physical models, and AI/ML models. </p>
-          <p> Here are several research highlights. </p>
+          <p> We study climate and weather with data, physical models, and AI/ML models. </p>
+          <p> Here are several research highlights/projects. </p>
           <div class="grid">
             <article class="card">
               <figure class="figure">
@@ -290,6 +292,54 @@
           </div>
         </div>
       </section>
+     end of old section 
+    -->
+     <section id="research" class="reveal">
+      <div class="container">
+        <h2>Research</h2>
+        <div class="grid">
+          <!-- Card 1 -->
+          <article class="card">
+            <a href="#" class="card-link" data-dialog="dlg-aerosol" aria-controls="dlg-aerosol" aria-haspopup="dialog">
+              <figure class="figure">
+                <img src="img/research-aerosol.jpg" alt="Cloud fields with aerosol plumes over ocean">
+              </figure>
+              <div class="pad">
+                <h4>Cloud–Aerosol Interactions</h4>
+                <p class="muted">Satellite retrievals of aerosol impacts on cloud microphysics and radiation.</p>
+              </div>
+            </a>
+          </article>
+    
+          <!-- Card 2 -->
+          <article class="card">
+            <a href="#" class="card-link" data-dialog="dlg-submeso" aria-controls="dlg-submeso" aria-haspopup="dialog">
+              <figure class="figure">
+                <img src="img/research-submeso.jpg" alt="Submesoscale ocean surface structure">
+              </figure>
+              <div class="pad">
+                <h4>Submesoscale Dynamics</h4>
+                <p class="muted">0.1–10 km dynamics and their role in vertical exchange and air–sea interaction.</p>
+              </div>
+            </a>
+          </article>
+    
+          <!-- Card 3 -->
+          <article class="card">
+            <a href="#" class="card-link" data-dialog="dlg-remote" aria-controls="dlg-remote" aria-haspopup="dialog">
+              <figure class="figure">
+                <img src="img/research-remote.jpg" alt="Satellite view of Earth with instrument overlay">
+              </figure>
+              <div class="pad">
+                <h4>Remote Sensing Methods</h4>
+                <p class="muted">Multi-sensor fusion and uncertainty quantification for climate data records.</p>
+              </div>
+            </a>
+          </article>
+        </div>
+      </div>
+    </section>
+
 
      <!-- <section id="publications" class="reveal">
         <div class="container">
@@ -404,6 +454,45 @@
         </div>
       </section>
     </main>
+<!-- these are Modals -->
+<dialog id="dlg-aerosol" class="modal" aria-labelledby="dlg-aerosol-title">
+  <header>
+    <h3 id="dlg-aerosol-title">Cloud–Aerosol Interactions</h3>
+    <button class="close-btn" data-close aria-label="Close dialog">Close</button>
+  </header>
+  <div class="pad">
+    <p>We investigate how aerosols modify cloud microphysics and radiative forcing using satellite retrievals (e.g., MODIS, CALIPSO) and reanalysis.</p>
+    <ul>
+      <li>Microphysical pathways (CCN, droplet size, optical depth)</li>
+      <li>Radiative effects and cloud feedbacks</li>
+      <li>Process-level constraints from multi-sensor synergy</li>
+    </ul>
+    <p><a href="#publications">Related publications</a></p>
+  </div>
+</dialog>
+
+<dialog id="dlg-submeso" class="modal" aria-labelledby="dlg-submeso-title">
+  <header>
+    <h3 id="dlg-submeso-title">Submesoscale Dynamics</h3>
+    <button class="close-btn" data-close aria-label="Close dialog">Close</button>
+  </header>
+  <div class="pad">
+    <p>We study 0.1–10 km dynamics and their role in vertical exchange, productivity, and air–sea interaction using theory, high-res models, and observations.</p>
+    <p><a href="#publications">Related publications</a></p>
+  </div>
+</dialog>
+
+<dialog id="dlg-remote" class="modal" aria-labelledby="dlg-remote-title">
+  <header>
+    <h3 id="dlg-remote-title">Remote Sensing Methods</h3>
+    <button class="close-btn" data-close aria-label="Close dialog">Close</button>
+  </header>
+  <div class="pad">
+    <p>We develop methods for multi-sensor fusion (passive/active), uncertainty quantification, and algorithm validation for climate data records.</p>
+    <p><a href="#publications">Related publications</a></p>
+  </div>
+</dialog>
+<!-- end of modals -->
 
     <footer>
       <div class="container">
