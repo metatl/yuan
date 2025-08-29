@@ -358,88 +358,88 @@
 <section id="publications" class="reveal">
   <div class="container">
     <h2>Publications</h2>
+
+    <!-- Render target -->
     <div id="pubs">Loading publications…</div>
+
     <p  style="margin-top:10px">
       Full list on
-      <a href="https://scholar.google.com/citations?user=Y8jCvxAAAAAJ&hl=en" target="_blank" rel="noopener">
-        Google Scholar
-      </a>.
+      <a href="https://scholar.google.com/citations?user=Y8jCvxAAAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar</a>.
     </p>
   </div>
 
+  <!-- Parser (works) -->
+  <script src="https://cdn.jsdelivr.net/npm/bibtex-parse-js@0.0.24/bibtexParse.js"></script>
+
+  <!-- Render -->
   <script>
-  (function () {
+  (async function () {
     const mount = document.getElementById('pubs');
-    const BIB_PATH = 'bib/publications.bib'; // keep RELATIVE for project pages
+    const BIB_PATH = 'bib/publications.bib'; // keep RELATIVE for project pages like /yuan/
 
-    // 1) Load the parser (CDN -> local fallback)
-    function loadScript(src, ok, fail){
-      const s = document.createElement('script');
-      s.src = src; s.onload = ok; s.onerror = fail;
-      document.head.appendChild(s);
-    }
-    loadScript(
-      'https://cdn.jsdelivr.net/npm/bibtex-parse-js@0.0.24/bibtexParse.js',
-      init,
-      () => loadScript('js/bibtexParse.js', init, () => {
-        mount.innerHTML = '<p class="muted">Could not load BibTeX parser (CDN and local both failed).</p>';
-      })
-    );
+    const esc = s => String(s||'').replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;' }[c]));
+    const strip = s => String(s||'').replace(/[{}]/g,'').trim();
 
-    // 2) Once parser is present, fetch + render
-    async function init(){
-      if (!window.bibtexParse || !bibtexParse.toJSON) {
-        mount.innerHTML = '<p class="muted">BibTeX parser not available.</p>';
-        return;
-      }
-      try {
-        const res = await fetch(BIB_PATH, { cache: 'no-cache' });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const bib = await res.text();
+    const YOU = ['yuan, t', 'tianle yuan', 'yuan, tianle'];
+    const fmtAuthors = s => !s ? '' :
+      s.split(/\s+and\s+/i).map(n=>{
+        const plain = strip(n);
+        const lc = plain.toLowerCase();
+        return YOU.some(y=>lc.includes(y)) ? `<strong>${esc(plain)}</strong>` : esc(plain);
+      }).join(', ');
 
-        const raw = bibtexParse.toJSON(bib) || [];
-        const t = s => String(s||'').replace(/[{}]/g,'').trim();
-        const entries = raw.map(r => {
-          const e = r.entry || {};
-          return {
-            title: t(e.title), year: t(e.year), author: t(e.author),
-            journal: t(e.journal), booktitle: t(e.booktitle), publisher: t(e.publisher),
-            doi: t(e.doi), url: t(e.url) || t(e.pdf) || t(e.link),
-            eprint: t(e.eprint), eprinttype: t(e.eprinttype),
-          };
-        }).filter(e => e.title && e.year)
-          .sort((a,b) => (b.year||'0').localeCompare(a.year||'0'));
+    try {
+      let res = await fetch(BIB_PATH, { cache: 'no-cache' });
+      if (!res.ok) throw new Error(`HTTP ${res.status} for ${BIB_PATH}`);
+      let bib = await res.text();
+      if (bib.charCodeAt(0) === 0xFEFF) bib = bib.slice(1); // strip BOM if present
 
-        const groups = entries.reduce((m,e)=>( (m[e.year]??=[]).push(e), m ), {});
-        const YOU = ['yuan, t', 'tianle yuan', 'yuan, tianle'];
-        const esc = s => String(s||'').replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;' }[c]));
-        const fmtAuthors = s => s.split(/\s+and\s+/i).map(n=>{
-          const plain = n.replace(/[{}]/g,'').trim();
-          const lc = plain.toLowerCase();
-          return YOU.some(y=>lc.includes(y)) ? `<strong>${esc(plain)}</strong>` : esc(plain);
-        }).join(', ');
-        const venue = e => esc(e.journal || e.booktitle || e.publisher || '');
-        const links = e => {
-          const xs = [];
-          if (e.doi) xs.push(`<a href="https://doi.org/${encodeURIComponent(e.doi)}" target="_blank" rel="noopener">DOI</a>`);
-          if (e.eprint && /arxiv/i.test(e.eprinttype||'')) xs.push(`<a href="https://arxiv.org/abs/${encodeURIComponent(e.eprint)}" target="_blank" rel="noopener">arXiv</a>`);
-          if (e.url) xs.push(`<a href="${esc(e.url)}" target="_blank" rel="noopener">Link</a>`);
-          return xs.length ? ' · ' + xs.join(' · ') : '';
+      if (!window.bibtexParse || !bibtexParse.toJSON) throw new Error('bibtexParse not loaded');
+
+      const raw = bibtexParse.toJSON(bib) || []; // [{ entryType, citationKey, entryTags: {title, author, year, ...} }]
+      // normalize
+      const entries = raw.map(r => {
+        const t = r.entryTags || {}; // <-- IMPORTANT: entryTags
+        const get = k => strip(t[k] || t[k?.toLowerCase()] || t[k?.toUpperCase()]);
+        return {
+          year: get('year'),
+          title: get('title'),
+          author: get('author'),
+          journal: get('journal'),
+          booktitle: get('booktitle'),
+          publisher: get('publisher'),
+          doi: get('doi'),
+          url: get('url') || get('pdf') || get('link'),
+          eprint: get('eprint'),
+          eprinttype: get('eprinttype')
         };
+      }).filter(e => e.title && e.year);
 
-        let html = '';
-        for (const y of Object.keys(groups).sort((a,b)=>b.localeCompare(a))) {
-          html += `<h3 style="margin:24px 0 8px 0">${y}</h3><ol class="publist">`;
-          for (const e of groups[y]) {
-            html += `<li>${fmtAuthors(e.author)} (${esc(e.year)}). <strong>${esc(e.title)}</strong>. ${venue(e) ? `<em>${venue(e)}</em>.` : ''}${links(e)}</li>`;
-          }
-          html += '</ol>';
+      // sort + group
+      entries.sort((a,b) => (b.year||'0').localeCompare(a.year||'0'));
+      const groups = entries.reduce((m,e)=>( (m[e.year]??=[]).push(e), m ), {});
+
+      const venue = e => esc(e.journal || e.booktitle || e.publisher || '');
+      const links = e => {
+        const xs = [];
+        if (e.doi) xs.push(`<a href="https://doi.org/${encodeURIComponent(e.doi)}" target="_blank" rel="noopener">DOI</a>`);
+        if (e.eprint && /arxiv/i.test(e.eprinttype||'')) xs.push(`<a href="https://arxiv.org/abs/${encodeURIComponent(e.eprint)}" target="_blank" rel="noopener">arXiv</a>`);
+        if (e.url) xs.push(`<a href="${esc(e.url)}" target="_blank" rel="noopener">Link</a>`);
+        return xs.length ? ' · ' + xs.join(' · ') : '';
+      };
+
+      let html = '';
+      for (const y of Object.keys(groups).sort((a,b)=>b.localeCompare(a))) {
+        html += `<h3 style="margin:24px 0 8px 0">${y}</h3><ol class="publist">`;
+        for (const e of groups[y]) {
+          html += `<li>${fmtAuthors(e.author)} (${esc(e.year)}). <strong>${esc(e.title)}</strong>. ${venue(e) ? `<em>${venue(e)}</em>.` : ''}${links(e)}</li>`;
         }
-        mount.innerHTML = html || '<p class="muted">No entries found.</p>';
-      } catch (err) {
-        console.error(err);
-        mount.innerHTML = `<p class="muted">Couldn’t load publications. Open <code>${location.origin}${location.pathname.replace(/index\\.html?$/, '') + BIB_PATH}</code> directly to verify it’s served (200 OK).</p>`;
+        html += '</ol>';
       }
+      mount.innerHTML = html || '<p class="muted">No entries found.</p>';
+    } catch (err) {
+      console.error(err);
+      mount.innerHTML = `<p class="muted">Couldn’t load publications. Open <code>${location.origin}${location.pathname.replace(/index\\.html?$/, '') + BIB_PATH}</code> to verify it serves (200 OK).</p>`;
     }
   })();
   </script>
