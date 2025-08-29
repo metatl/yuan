@@ -181,6 +181,66 @@
       .figure img{display:block;width:100%;height:auto;transform:scale(1.0);transition:transform .8s ease}
       .card:hover .figure img{transform:scale(1.05)}
       .card .pad{padding:14px}
+      /* Dutch orange overlay + plus icon on hover/focus */
+        :root { --dutch-orange: #ff8f00; } /* tweak if you want a different orange */
+        
+        a.card-link { cursor: pointer; }
+        
+        /* Make sure figure can host the overlay */
+        .figure { position: relative; overflow: hidden; border-radius: inherit; }
+        
+        /* Orange block */
+        .figure::before{
+          content:"";
+          position:absolute; inset:0;
+          background: var(--dutch-orange);
+          opacity:0;
+          transition: opacity .25s ease;
+        }
+        
+        /* White plus sign */
+        .figure::after{
+          content:"+";
+          position:absolute; left:50%; top:50%;
+          transform: translate(-50%,-50%) scale(.92);
+          font-weight:700; font-size:56px; line-height:1;
+          color:#fff;
+          text-shadow:0 2px 10px rgba(0,0,0,.25);
+          opacity:0;
+          transition: opacity .25s ease, transform .25s ease;
+        }
+        
+        /* Fade out the image so it becomes a solid orange block */
+        .card-link .figure img{
+          transition: opacity .25s ease;
+        }
+        .card-link:hover .figure img,
+        .card-link:focus-visible .figure img{
+          opacity:0; /* set to .1 if you prefer a hint of the image */
+        }
+        
+        /* Show overlay + plus on hover (mouse) and focus (keyboard) */
+        .card-link:hover .figure::before,
+        .card-link:focus-visible .figure::before{ opacity:.95; }
+        
+        .card-link:hover .figure::after,
+        .card-link:focus-visible .figure::after{
+          opacity:1; transform: translate(-50%,-50%) scale(1);
+        }
+        
+        /* If you had an image-zoom on hover, cancel it while overlay is shown */
+        .card-link:hover .figure img,
+        .card-link:focus-visible .figure img{
+          transform:none !important;
+        }
+        
+        /* Respect reduced motion */
+        @media (prefers-reduced-motion: reduce){
+          .figure::before, .figure::after, .card-link .figure img{
+            transition:none;
+          }
+        }
+
       /* People */
       .role{font-size:14px;color:var(--muted);margin:.25rem 0 .5rem}
       .actions a{margin-right:10px}
