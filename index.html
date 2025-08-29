@@ -353,92 +353,131 @@
       </section>
     -->
 
-     <section id="publications" class="reveal">
-      <div class="container">
-        <h2>Publications</h2>
+  <!-- === Publications === -->
+<section id="publications" class="reveal">
+  <div class="container">
+    <h2>Publications</h2>
 
-        <!-- Your publications will appear right here -->
-        <div id="pubs"></div>
+    <!-- The list will be rendered here -->
+    <div id="pubs">Loading publications…</div>
 
-        <!-- Embed via BibBase (group by year, newest first, full names, minimal UI) -->
-        <!--
-          <script src="https://bibbase.org/show?bib=https://metatl.github.io/yuan/bib/publications.bib&jsonp=1&group0=year&sort=-year&fullnames=1&theme=dividers&hidemenu=1"></script>
-        -->
-        <!-- Fallback link if the .bib isn't present yet -->
-        <p style="margin-top:10px">
-          Full list on <a href="https://scholar.google.com/citations?user=Y8jCvxAAAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar</a>.
-        </p>
-          </div>
-        </section>
+    <p class="muted" style="margin-top:10px">
+      Full list on
+      <a href="https://scholar.google.com/citations?user=Y8jCvxAAAAAJ&hl=en" target="_blank" rel="noopener">
+        Google Scholar
+      </a>.
+    </p>
+  </div>
+</section>
 
-<!-- Lightweight BibTeX parsing + render -->
-<script src="https://cdn.jsdelivr.net/npm/bibtex-parse-js@2.0.7/bibtexParse.min.js"></script>
-<script>
-(async function renderPubs() {
-  // 1) Load your BibTeX (same origin — no CORS issues)
-  const res = await fetch('bib/publications.bib');
-  const bib = await res.text();
+<!-- 1) BibTeX parser (must come BEFORE the render script) -->
+<script src="https://cdn.jsdelivr.net/npm/bibtex-parse-js@2.0.7/bibtexParse.min.js" defer></script>
 
-  // 2) Parse
-  const raw = bibtexParse.toJSON(bib) || [];
-  // Normalize into simpler objects
-  const entries = raw.map(r => {
-    const e = r.entry || {};
-    const t = (s='') => String(s||'').trim();
-    return {
-      key: t(r.citationKey),
-      type: t(r.entryType),
-      title: t(e.title),
-      year: t(e.year),
-      author: t(e.author),
-      journal: t(e.journal) || t(e.booktitle) || t(e.publisher),
-      doi: t(e.doi),
-      url: t(e.url) || t(e.pdf) || t(e.link),
-      arxiv: t(e.eprint) && /arxiv/i.test(e.eprinttype||'') ? t(e.eprint) : ''
-    };
-  }).filter(e => e.title && e.year);
+<!-- 2) Render the list from your repo's bib/publications.bib -->
+<script defer>
+(function () {
+  const mount = document.getElementById('pubs');
+  const BIB_PATH = 'bib/publications.bib';  // keep RELATIVE (works on project pages like /yuan/)
 
-  // 3) Sort newest first, then group by year
-  entries.sort((a,b) => (b.year||'0').localeCompare(a.year||'0'));
-  const byYear = entries.reduce((acc, e) => {
-    (acc[e.year] ||= []).push(e);
-    return acc;
-  }, {});
+  function escapeHTML(s) {
+    return String(s).replace(/[&<>"']/g, ch => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[ch]));
+  }
 
-  // 4) Helpers
-  const you = ['yuan, t', 'tianle yuan', 'yuan, tianle'];
   function fmtAuthors(str) {
     if (!str) return '';
-    const parts = str.split(/\s+and\s+/i).map(s => s.trim());
-    return parts.map(name => {
-      const n = name.toLowerCase().replace(/[{}]/g,'').trim();
-      const isYou = you.some(y => n.includes(y));
-      return isYou ? `<strong>${name}</strong>` : name;
-    }).join(', ');
+    const YOU = ['yuan, t', 'tianle yuan', 'yuan, tianle'];
+    return str
+      .split(/\s+and\s+/i)
+      .map(name => {
+        const plain = name.replace(/[{}]/g,'').trim();
+        const lc = plain.toLowerCase();
+        const isYou = YOU.some(y => lc.includes(y));
+        return isYou ? `<strong>${escapeHTML(plain)}</strong>` : escapeHTML(plain);
+      })
+      .join(', ');
   }
-  function venue(e) { return e.journal ? `<em>${e.journal}</em>` : ''; }
+
+  function venue(e) {
+    const v = e.journal || e.booktitle || e.publisher || '';
+    return v ? `<em>${escapeHTML(v)}</em>` : '';
+  }
+
   function links(e) {
-    const xs = [];
-    if (e.doi) xs.push(`<a href="https://doi.org/${e.doi}" target="_blank" rel="noopener">DOI</a>`);
-    if (e.arxiv) xs.push(`<a href="https://arxiv.org/abs/${e.arxiv}" target="_blank" rel="noopener">arXiv</a>`);
-    if (e.url) xs.push(`<a href="${e.url}" target="_blank" rel="noopener">Link</a>`);
-    return xs.length ? ` · ${xs.join(' · ')}` : '';
+    const out = [];
+    if (e.doi) out.push(`<a href="https://doi.org/${encodeURIComponent(e.doi)}" target="_blank" rel="noopener">DOI</a>`);
+    if (e.eprint && /arxiv/i.test(e.eprinttype||'')) out.push(`<a href="https://arxiv.org/abs/${encodeURIComponent(e.eprint)}" target="_blank" rel="noopener">arXiv</a>`);
+    const url = e.url || e.pdf || e.link;
+    if (url) out.push(`<a href="${escapeHTML(url)}" target="_blank" rel="noopener">Link</a>`);
+    return out.length ? ` · ${out.join(' · ')}` : '';
   }
 
-  // 5) Render
-  let html = '';
-  Object.keys(byYear).sort((a,b)=>b.localeCompare(a)).forEach(y => {
-    html += `<h3 style="margin:24px 0 8px 0">${y}</h3><ol class="publist">`;
-    byYear[y].forEach(e => {
-      html += `<li>
-        ${fmtAuthors(e.author)} (${e.year}). <strong>${e.title}</strong>.
-        ${venue(e)}${links(e)}
-      </li>`;
-    });
-    html += `</ol>`;
-  });
+  async function run() {
+    try {
+      const res = await fetch(BIB_PATH, { cache: 'no-cache' });
+      if (!res.ok) throw new Error(`HTTP ${res.status} fetching ${BIB_PATH}`);
+      const bib = await res.text();
 
-  document.getElementById('pubs').innerHTML = html || '<p class="muted">No entries found.</p>';
+      if (!window.bibtexParse || !bibtexParse.toJSON) {
+        throw new Error('bibtexParse library not available');
+      }
+
+      const raw = bibtexParse.toJSON(bib) || [];
+      const entries = raw.map(r => {
+        const e = r.entry || {};
+        const t = s => String(s || '').replace(/[{}]/g,'').trim();
+        return {
+          key: t(r.citationKey),
+          entryType: t(r.entryType),
+          title: t(e.title),
+          year: t(e.year),
+          author: t(e.author),
+          journal: t(e.journal),
+          booktitle: t(e.booktitle),
+          publisher: t(e.publisher),
+          doi: t(e.doi),
+          url: t(e.url) || t(e.pdf) || t(e.link),
+          eprint: t(e.eprint),
+          eprinttype: t(e.eprinttype),
+        };
+      }).filter(e => e.title && e.year);
+
+      // Sort newest first, then group by year
+      entries.sort((a,b) => (b.year||'0').localeCompare(a.year||'0'));
+      const byYear = entries.reduce((acc, e) => {
+        (acc[e.year] ||= []).push(e);
+        return acc;
+      }, {});
+
+      // Render
+      let html = '';
+      for (const y of Object.keys(byYear).sort((a,b)=>b.localeCompare(a))) {
+        html += `<h3 style="margin:24px 0 8px 0">${y}</h3><ol class="publist">`;
+        for (const e of byYear[y]) {
+          html += `<li>${fmtAuthors(e.author)} (${e.year}). <strong>${escapeHTML(e.title)}</strong>. ${venue(e)}${links(e)}</li>`;
+        }
+        html += `</ol>`;
+      }
+
+      mount.innerHTML = html || '<p class="muted">No entries found.</p>';
+    } catch (err) {
+      console.error(err);
+      mount.innerHTML = `
+        <p class="muted">
+          Couldn’t load publications. Quick checks:
+          <br>• Is <code>${BIB_PATH}</code> committed to the repo?
+          <br>• Open <code>${location.origin}${location.pathname.replace(/index\\.html?$/, '') + BIB_PATH}</code> directly in your browser.
+        </p>`;
+    }
+  }
+
+  // Defer ensures parser loads first; run on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run, { once: true });
+  } else {
+    run();
+  }
 })();
 </script>
 
