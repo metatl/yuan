@@ -167,8 +167,8 @@
 
       h4{
         font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-        font-size:clamp(18px,2.6vw,24px);
-        margin:0 0 16px 0;
+        font-size:clamp(15px,2vw,22px);
+        margin:0 0 8px 0;
         text-align: center; 
       }
       .publist,.teachlist{padding-left:18px}
@@ -365,6 +365,7 @@
      <section id="research" class="reveal">
       <div class="container">
         <h2>Research</h2>
+        <p class="muted"> We study climate and weather with data, physical models, and AI/ML models. Here are a few projects and focus areas.</p>
         <div class="grid">
           <!-- Card 1 -->
           <article class="card">
@@ -380,26 +381,24 @@
     
           <!-- Card 2 -->
           <article class="card">
-            <a href="#" class="card-link" data-dialog="dlg-submeso" aria-controls="dlg-submeso" aria-haspopup="dialog">
+            <a href="#" class="card-link" data-dialog="dlg-ml-models" aria-controls="dlg-ml-models" aria-haspopup="dialog">
               <figure class="figure">
-                <img src="img/research-submeso.jpg" alt="Submesoscale ocean surface structure">
+                <img src="dist/assets/img/research-ml.jpg" alt="AI/ML models">
               </figure>
               <div class="pad">
-                <h4>Submesoscale Dynamics</h4>
-                <p class="muted">0.1–10 km dynamics and their role in vertical exchange and air–sea interaction.</p>
+                <h4>Develop AI/ML models</h4>
               </div>
             </a>
           </article>
     
           <!-- Card 3 -->
           <article class="card">
-            <a href="#" class="card-link" data-dialog="dlg-remote" aria-controls="dlg-remote" aria-haspopup="dialog">
+            <a href="#" class="card-link" data-dialog="dlg-geoeng" aria-controls="dlg-geoeng" aria-haspopup="dialog">
               <figure class="figure">
-                <img src="img/research-remote.jpg" alt="Satellite view of Earth with instrument overlay">
+                <img src="dist/assets/img/research-geoeng.jpg" alt="Geoengineering">
               </figure>
               <div class="pad">
-                <h4>Remote Sensing Methods</h4>
-                <p class="muted">Multi-sensor fusion and uncertainty quantification for climate data records.</p>
+                <h4>Climate engineering</h4>
               </div>
             </a>
           </article>
@@ -638,24 +637,26 @@
   </div>
 </dialog>
 
-<dialog id="dlg-submeso" class="modal" aria-labelledby="dlg-submeso-title">
+<dialog id="dlg-ml-models" class="modal" aria-labelledby="dlg-ml-models">
   <header>
-    <h3 id="dlg-submeso-title">Submesoscale Dynamics</h3>
+    <h3 id="dlg-ml">AI/ML models</h3>
     <button class="close-btn" data-close aria-label="Close dialog">Close</button>
   </header>
   <div class="pad">
-    <p>We study 0.1–10 km dynamics and their role in vertical exchange, productivity, and air–sea interaction using theory, high-res models, and observations.</p>
+    <p>We develop AI/ML models for various tasks such as prediction (e.g., solar energy), climate physics modeling (e.g., clouds), 
+        classification (e.g., morphology), and segmentation (e.g., ship-tracks, fire). </p>
     <p><a href="#publications">Related publications</a></p>
   </div>
 </dialog>
 
-<dialog id="dlg-remote" class="modal" aria-labelledby="dlg-remote-title">
+<dialog id="dlg-geoeng" class="modal" aria-labelledby="dlg-geo-eng">
   <header>
-    <h3 id="dlg-remote-title">Remote Sensing Methods</h3>
+    <h3 id="dlg-geo-eng">Climate engineering</h3>
     <button class="close-btn" data-close aria-label="Close dialog">Close</button>
   </header>
   <div class="pad">
-    <p>We develop methods for multi-sensor fusion (passive/active), uncertainty quantification, and algorithm validation for climate data records.</p>
+    <p>WClimate engineering studies potential ways to temporarily cool our climate and their implications and consequences. There are a lot of interesting
+    questions and challenges.</p>
     <p><a href="#publications">Related publications</a></p>
   </div>
 </dialog>
