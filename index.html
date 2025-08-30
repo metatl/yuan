@@ -77,6 +77,19 @@
       .text-center {
       text-align: center;
         }
+
+    .inline-icon {
+      /* Sizing: Makes the icon the same height as the text's cap-height */
+      height: 1em;
+      width: 1em;
+    
+      /* Alignment: Adjusts the icon vertically to line up with the text */
+      vertical-align: middle; 
+      /* Other good options: text-bottom, -0.15em */
+    
+      /* Optional: Adds a little space around the icon */
+      margin: 0 0.2em;
+    }
       /* Hero */
       /*.hero{
       min-height: 92svh;             /* full screen, mobile-safe */
@@ -516,7 +529,7 @@
         <div class="container">
           <h2>Press </h2>
          <!-- <p class ="muted"> Our research has been featured in outlets such as <strong>New York Times, Washington Post, Science Mag., New Scientist</strong> etc.</p> -->
-            <p class ="muted"> Our research has been featured in outlets such as <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 140" role="img" aria-label="Tianle Yuan logo"> </svg> etc.</p>
+            <p class ="muted"> Our research has been featured in outlets such as <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 140" role="img" class="inline-icon src="dist/assets/img/"> </svg> etc.</p>
           <ul class="publist">
              <li> <p> <a href = "https://www.nytimes.com/2023/12/26/climate/global-warming-accelerating.html">Earth Was Due for Another Year of Record Warmth. But This Warm?
                  </a> <strong>The New York Times </strong> </p></li>
