@@ -733,7 +733,7 @@
           </div>
         <div class="pad" style="text-align: center;">
         <p class='muted'> Group Alumni </p>
-        <ul>
+        <ul class="flex-centered-list">
           <li class='muted'> Mikael Nida, MIT</li>
           <li class='muted'> Aaron Hultstrand, Univ. of North Dakota</li>
           <li class='muted'> Katherine Cobey, Brown Univ.</li>  
@@ -744,6 +744,19 @@
           <li class='muted'> Ava Xu, HS</li>
           <li class='muted'> Jasmine Zhang, CUNY</li>
            </ul>
+        <style>
+          .flex-centered-list {
+            /* Make the <ul> a flex container */
+            display: flex;
+            /* Stack list items vertically */
+            flex-direction: column; 
+            /* Center items horizontally */
+            align-items: center; 
+        
+            /* Optional: Remove default padding */
+            padding-left: 0;
+          }
+        </style>
           </div>
         </div>
       </section>
