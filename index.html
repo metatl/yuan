@@ -434,52 +434,73 @@
     <!-- Embed via BibBase (group by year, newest first, full names, minimal UI) -->
    <!-- <script src="https://bibbase.org/show?bib=https://metatl.github.io/yuan/bib/publications.bib&jsonp=1&group0=year&sort=-year&fullnames=1&theme=dividers&hidemenu=1"></script>
 -->
-<!-- === Publications === -->
+<!-- === Publications (robust loader) === -->
 <section id="publications" class="reveal">
   <div class="container">
     <h2>Publications</h2>
-
-    <!-- Render target -->
     <div id="pubs">Loading publications…</div>
-
-    <p  style="margin-top:10px">
+    <p class="muted" style="margin-top:10px">
       Full list on
       <a href="https://scholar.google.com/citations?user=Y8jCvxAAAAAJ&hl=en" target="_blank" rel="noopener">Google Scholar</a>.
     </p>
   </div>
 
-  <!-- Parser (works) -->
-  <script src="https://cdn.jsdelivr.net/npm/bibtex-parse-js@0.0.24/bibtexParse.js"></script>
-
-  <!-- Render -->
   <script>
-  (async function () {
-    const mount = document.getElementById('pubs');
-    const BIB_PATH = 'bib/publications.bib'; // keep RELATIVE for project pages like /yuan/
+  (function () {
+    const mount   = document.getElementById('pubs');
+    const BIBPATH = 'bib/publications.bib';  // keep RELATIVE for project pages
+    const CDN     = 'https://cdn.jsdelivr.net/npm/bibtex-parse-js@0.0.24/bibtexParse.js';
+    const LOCAL   = 'js/bibtexParse.js';     // add this file as a fallback copy in your repo (optional)
 
-    const esc = s => String(s||'').replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;' }[c]));
+    // --- helpers ---
+    const esc   = s => String(s||'').replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;', "'":'&#39;' }[c]));
     const strip = s => String(s||'').replace(/[{}]/g,'').trim();
 
-    const YOU = ['yuan, t', 'tianle yuan', 'yuan, tianle'];
-    const fmtAuthors = s => !s ? '' :
-      s.split(/\s+and\s+/i).map(n=>{
-        const plain = strip(n);
-        const lc = plain.toLowerCase();
-        return YOU.some(y=>lc.includes(y)) ? `<strong>${esc(plain)}</strong>` : esc(plain);
-      }).join(', ');
+    function loadScript(src){ 
+      return new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = src;
+        s.onload = resolve;
+        s.onerror = () => reject(new Error('Failed to load '+src));
+        document.head.appendChild(s);
+      });
+    }
 
-    try {
-      let res = await fetch(BIB_PATH, { cache: 'no-cache' });
-      if (!res.ok) throw new Error(`HTTP ${res.status} for ${BIB_PATH}`);
-      let bib = await res.text();
-      if (bib.charCodeAt(0) === 0xFEFF) bib = bib.slice(1); // strip BOM if present
+    function waitForParser(timeoutMs=3000){
+      const start = Date.now();
+      return new Promise((resolve, reject) => {
+        (function tick(){
+          if (window.bibtexParse && typeof bibtexParse.toJSON === 'function') return resolve();
+          if (Date.now() - start > timeoutMs) return reject(new Error('bibtexParse not available'));
+          setTimeout(tick, 50);
+        })();
+      });
+    }
 
-      if (!window.bibtexParse || !bibtexParse.toJSON) throw new Error('bibtexParse not loaded');
+    async function fetchWithRetry(url, options={}, retries=2){
+      let err;
+      for (let i=0; i<=retries; i++){
+        try {
+          const res = await fetch(url, {...options, cache:'no-store', headers:{'Cache-Control':'no-store'}});
+          if (!res.ok) throw new Error('HTTP '+res.status);
+          return res;
+        } catch(e){
+          err = e;
+          await new Promise(r => setTimeout(r, 200*(i+1)));
+        }
+      }
+      throw err;
+    }
 
-      const raw = bibtexParse.toJSON(bib) || []; // [{ entryType, citationKey, entryTags: {title, author, year, ...} }]
-      // normalize
+    function render(bibText){
+      let s = bibText;
+      if (s.charCodeAt(0) === 0xFEFF) s = s.slice(1); // strip BOM if present
+
+      const raw = (bibtexParse.toJSON(s) || []); // [{ entryType, citationKey, entryTags: {...} }]
+      const YOU = ['yuan, t', 'tianle yuan', 'yuan, tianle'];
+
       const entries = raw.map(r => {
-        const t = r.entryTags || {}; // <-- IMPORTANT: entryTags
+        const t = r.entryTags || {};
         const get = k => strip(t[k] || t[k?.toLowerCase()] || t[k?.toUpperCase()]);
         return {
           year: get('year'),
@@ -495,16 +516,22 @@
         };
       }).filter(e => e.title && e.year);
 
-      // sort + group
+      // sort & group
       entries.sort((a,b) => (b.year||'0').localeCompare(a.year||'0'));
       const groups = entries.reduce((m,e)=>( (m[e.year]??=[]).push(e), m ), {});
 
+      const fmtAuthors = s => !s ? '' :
+        s.split(/\s+and\s+/i).map(n=>{
+          const plain = strip(n); const lc = plain.toLowerCase();
+          return YOU.some(y=>lc.includes(y)) ? `<strong>${esc(plain)}</strong>` : esc(plain);
+        }).join(', ');
+
       const venue = e => esc(e.journal || e.booktitle || e.publisher || '');
       const links = e => {
-        const xs = [];
-        if (e.doi) xs.push(`<a href="https://doi.org/${encodeURIComponent(e.doi)}" target="_blank" rel="noopener">DOI</a>`);
+        const xs=[];
+        if (e.doi)   xs.push(`<a href="https://doi.org/${encodeURIComponent(e.doi)}" target="_blank" rel="noopener">DOI</a>`);
         if (e.eprint && /arxiv/i.test(e.eprinttype||'')) xs.push(`<a href="https://arxiv.org/abs/${encodeURIComponent(e.eprint)}" target="_blank" rel="noopener">arXiv</a>`);
-        if (e.url) xs.push(`<a href="${esc(e.url)}" target="_blank" rel="noopener">Link</a>`);
+        if (e.url)   xs.push(`<a href="${esc(e.url)}" target="_blank" rel="noopener">Link</a>`);
         return xs.length ? ' · ' + xs.join(' · ') : '';
       };
 
@@ -517,13 +544,29 @@
         html += '</ol>';
       }
       mount.innerHTML = html || '<p class="muted">No entries found.</p>';
-    } catch (err) {
-      console.error(err);
-      mount.innerHTML = `<p class="muted">Couldn’t load publications. Open <code>${location.origin}${location.pathname.replace(/index\\.html?$/, '') + BIB_PATH}</code> to verify it serves (200 OK).</p>`;
     }
+
+    (async function boot(){
+      try {
+        // Load parser from CDN, then local fallback if CDN fails
+        try { await loadScript(CDN); }
+        catch { await loadScript(LOCAL); }
+        await waitForParser();
+
+        // Fetch .bib (no-store) with a quick retry, then render
+        const res = await fetchWithRetry(BIBPATH);
+        const bib = await res.text();
+        render(bib);
+      } catch(err){
+        console.error('[pubs] failed:', err);
+        const url = location.origin + location.pathname.replace(/index\.html?$/,'') + BIBPATH;
+        mount.innerHTML = `<p class="muted">Couldn’t load publications. Check the console and verify <code>${url}</code> serves (200 OK).</p>`;
+      }
+    })();
   })();
   </script>
 </section>
+
       <section id="teaching" class="reveal">
         <div class="container">
           <h2>Teaching</h2>
@@ -630,8 +673,8 @@
             </article>
           </div>
         <div class="pad">
-        <p class='muted'> Group Alumni 
-        <ul>
+        <p class='muted'> Group Alumni </p>
+        <ul class='muted'>
           <li class='muted'> Mikael Nida, MIT</li>
           <li class='muted'> Aaron Hultstrand, Univ. of North Dakota</li>
           <li class='muted'> Katherine Cobey, Brown Univ.</li>  
@@ -642,7 +685,7 @@
           <li class='muted'> Ava Xu, HS</li>
           <li class='muted'> Jasmine Zhang, CUNY</li>
            </ul>
-        </p>
+        
           </div>
         </div>
       </section>
